@@ -6,6 +6,13 @@ Downloads from Libsyn or similar sites based on their RSS feed.
   * `dir/rss.xml`
   * `dir/YYY/MM/YYYYMMDD_title/filename.mp3`
 
+## Depdenencies
+
+Install requirements:
+``` bash
+pip3 install -r requirements.txt
+```
+
 ## Usage
 
 Try `python3 podcast.backup.py -h` for help!
