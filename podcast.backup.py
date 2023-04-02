@@ -72,9 +72,7 @@ def yyyymmdd(ts):
         dd = "0" + dd
     return yyyy + mm + dd
 
-def generate_filename(title, mp3, ts):
-    ddir = generate_yyyy_mm_dirname(dir_backups, ts)
-    fn = yyyymmdd( ts ) + "_" + title
+def sanitize_filename(fn):
     fn = fn.lower()
     fn = fn.replace('å','a')
     fn = fn.replace('ä','a')
@@ -84,9 +82,22 @@ def generate_filename(title, mp3, ts):
     fn = fn.replace('Ö','O')
     fn = re.sub('[^a-zA-Z0-9]+', '_', fn)
     fn = fn.strip('_')
+    fn = re.sub('_mp3$', '.mp3', fn)
+    return fn
+
+def generate_filename(title, mp3, ts):
+    # Dirname: basedir/YYYY/MM/YYYYMMDD_Title
+    ddir = generate_yyyy_mm_dirname(dir_backups, ts)
+    fn = yyyymmdd( ts ) + "_" + title
+    fn = sanitize_filename(fn)
     ddir = os.path.join(ddir, fn)
     create_dir( ddir )
-    return fn
+    # Filename: mp3-filename
+    fn = mp3.split('/')[-1]
+    fn = mp3.split('?')[0]
+    fn = sanitize_filename(fn)
+    ddir = os.path.join(ddir, fn)
+    return ddir
 
 def process_rss(url):
     logger.info(f"Request feed from {url}")
@@ -103,7 +114,7 @@ def process_entry(e):
 
     mp3 = gimme_mp3(links)
     fname = generate_filename(title, mp3, published_p)
-    logger.info(f"MP3: {mp3}")
+    logger.info(f"fname: {fname}")
 
     #logger.info(f"Update: {fname_full}")
 
