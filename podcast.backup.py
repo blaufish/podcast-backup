@@ -4,6 +4,7 @@ import feedparser
 import logging
 import os
 import re
+import requests
 import time
 import yaml
 
@@ -99,6 +100,13 @@ def generate_filename(title, mp3, ts):
     ddir = os.path.join(ddir, fn)
     return ddir
 
+def download(url, filename):
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+
 def process_rss(url):
     logger.info(f"Request feed from {url}")
     rss = feedparser.parse(url)
@@ -107,16 +115,17 @@ def process_rss(url):
         process_entry(entry)
 
 def process_entry(e):
-    published    = e['published']
     published_p  = e['published_parsed']
     title        = e['title']
     links        = e['links']
 
     mp3 = gimme_mp3(links)
     fname = generate_filename(title, mp3, published_p)
-    logger.info(f"fname: {fname}")
-
-    #logger.info(f"Update: {fname_full}")
+    if os.path.exists(fname):
+        log.debug(f"Download: {fname} : Allready downloaded.")
+    else:
+        logger.info(f"Download: {fname}")
+        download(mp3, fname)
 
 def main():
     parser = argparse.ArgumentParser(
