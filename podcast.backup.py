@@ -1,12 +1,9 @@
 import argparse
-import datetime
 import feedparser
 import logging
 import os
 import re
 import requests
-import time
-import yaml
 
 #
 # Global variables, arguments
