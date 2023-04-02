@@ -1,5 +1,11 @@
 # Podcast backup from RSS/libsyn
 
+Downloads from Libsyn or similar sites based on their RSS feed.
+* Quality as-is, very basic script.
+* Presumes you want the following directory structure:
+  * `dir/rss.xml`
+  * `dir/YYY/MM/YYYYMMDD_title/filename.mp3`
+
 ## Usage
 
 Try `python3 podcast.backup.py -h` for help!
