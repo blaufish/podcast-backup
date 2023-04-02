@@ -11,6 +11,9 @@ import requests
 
 logger = None
 dir_backups = None
+counter_skipped = 0
+counter_downloaded = 0
+counter_all = 0
 
 #
 # Setters for global variables
@@ -113,8 +116,17 @@ def process_rss(url):
     entries = rss['entries'];
     for entry in entries:
         process_entry(entry)
+    logger.info(f"{counter_all} files processed.")
+    logger.info(f"{counter_skipped} files skipped; allready downloaded.")
+    logger.info(f"{counter_downloaded} files downloaded.")
 
 def process_entry(e):
+    global counter_skipped
+    global counter_downloaded
+    global counter_all
+
+    counter_all += 1
+
     published_p  = e['published_parsed']
     title        = e['title']
     links        = e['links']
@@ -122,10 +134,12 @@ def process_entry(e):
     mp3 = gimme_mp3(links)
     fname = generate_filename(title, mp3, published_p)
     if os.path.exists(fname):
+        counter_skipped += 1
         logger.debug(f"Download: {fname} : Allready downloaded.")
     else:
         logger.info(f"Download: {fname}")
         download(mp3, fname)
+        counter_downloaded += 1
 
 def main():
     parser = argparse.ArgumentParser(
