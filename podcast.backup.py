@@ -106,7 +106,10 @@ def download(url, filename):
 
 def process_rss(url):
     logger.info(f"Request feed from {url}")
-    rss = feedparser.parse(url)
+    rss_xml = os.path.join(dir_backups, "rss.xml")
+    download(url, rss_xml)
+    logger.info(f"Parse {rss_xml}")
+    rss = feedparser.parse(rss_xml)
     entries = rss['entries'];
     for entry in entries:
         process_entry(entry)
