@@ -94,7 +94,7 @@ def generate_filename(title, mp3, ts):
     create_dir( ddir )
     # Filename: mp3-filename
     fn = mp3.split('/')[-1]
-    fn = mp3.split('?')[0]
+    fn = fn.split('?')[0]
     fn = sanitize_filename(fn)
     ddir = os.path.join(ddir, fn)
     return ddir
