@@ -122,7 +122,7 @@ def process_entry(e):
     mp3 = gimme_mp3(links)
     fname = generate_filename(title, mp3, published_p)
     if os.path.exists(fname):
-        log.debug(f"Download: {fname} : Allready downloaded.")
+        logger.debug(f"Download: {fname} : Allready downloaded.")
     else:
         logger.info(f"Download: {fname}")
         download(mp3, fname)
