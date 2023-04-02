@@ -139,7 +139,7 @@ def main():
             dest = 'dir',
             default = None,
             required = True,
-            help = f'Hugo posts directory (where to write files to).')
+            help = f'Directory to backup to. Writes files to dir/YYYY/MM/YYYYMMDD_Title/name.mp3')
     parser.add_argument('--url',
             dest = 'url',
             required = True,
