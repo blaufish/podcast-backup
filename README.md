@@ -18,6 +18,16 @@ options:
 Hope this help was helpful! :-)
 ```
 
+Example: `python3 podcast.backup.py --dir test --url https://sakerhetspodcasten.libsyn.com/rss`
+
+```
+2023-04-02 19:19:42,839 INFO Request feed from https://sakerhetspodcasten.libsyn.com/rss
+2023-04-02 19:19:54,264 INFO Parse test/rss.xml
+2023-04-02 19:19:54,436 INFO 254 files processed.
+2023-04-02 19:19:54,436 INFO 254 files skipped; allready downloaded.
+2023-04-02 19:19:54,436 INFO 0 files downloaded.
+```
+
 Example: `python3 podcast.backup.py --dir test --url https://sakerhetspodcasten.libsyn.com/rss --loglevel DEBUG`
 
 ```
