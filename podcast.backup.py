@@ -32,15 +32,14 @@ def dir_setup(fdir):
         raise Exception(f"Directory {fdir} does not exists.")
     dir_backups = fdir
 
+def create_dir(fdir):
+    if not os.path.exists(fdir):
+        logging.debug(f"mkdir: {fdir}")
+        os.mkdir(fdir)
+
 #
 # Utility functions
 #
-
-def timestruct_to_isoformat(ts):
-    t = time.mktime(ts)
-    dt = datetime.datetime.fromtimestamp(t)
-    iso = dt.isoformat()
-    return iso
 
 def gimme_mp3(links):
     yolo = None
@@ -52,8 +51,30 @@ def gimme_mp3(links):
             yolo = href
     return yolo
 
-def generate_filename(title):
-    fn = title
+def generate_yyyy_mm_dirname(basename, ts):
+    yyyy = str(ts.tm_year)
+    mm = str(ts.tm_mon)
+    if len(mm) == 1:
+        mm = "0" + mm
+    ddir = os.path.join(basename, yyyy)
+    create_dir(ddir)
+    ddir = os.path.join(ddir, mm)
+    create_dir(ddir)
+    return ddir
+
+def yyyymmdd(ts):
+    yyyy = str(ts.tm_year)
+    mm = str(ts.tm_mon)
+    dd = str(ts.tm_mday)
+    if len(mm) == 1:
+        mm = "0" + mm
+    if len(dd) == 1:
+        dd = "0" + dd
+    return yyyy + mm + dd
+
+def generate_filename(title, mp3, ts):
+    ddir = generate_yyyy_mm_dirname(dir_backups, ts)
+    fn = yyyymmdd( ts ) + "_" + title
     fn = fn.lower()
     fn = fn.replace('å','a')
     fn = fn.replace('ä','a')
@@ -63,6 +84,8 @@ def generate_filename(title):
     fn = fn.replace('Ö','O')
     fn = re.sub('[^a-zA-Z0-9]+', '_', fn)
     fn = fn.strip('_')
+    ddir = os.path.join(ddir, fn)
+    create_dir( ddir )
     return fn
 
 def process_rss(url):
@@ -76,18 +99,13 @@ def process_entry(e):
     published    = e['published']
     published_p  = e['published_parsed']
     title        = e['title']
-
-    fname = generate_filename(title)
-    fname_full = dir_backups + "/" + fname
-
-    summary      = e['summary']
-    duration     = e['itunes_duration']
     links        = e['links']
-    published_pp = timestruct_to_isoformat( published_p )
+
     mp3 = gimme_mp3(links)
+    fname = generate_filename(title, mp3, published_p)
     logger.info(f"MP3: {mp3}")
 
-    logger.info(f"Update: {fname_full}")
+    #logger.info(f"Update: {fname_full}")
 
 def main():
     parser = argparse.ArgumentParser(
